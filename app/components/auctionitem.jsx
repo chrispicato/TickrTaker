@@ -77,6 +77,7 @@ export default class AuctionItem extends Component {
       method: 'GET',
       url: '/api/user_data',
       success: function(user) {
+        console.log('user---->', user);
         context.setState({
           userId: user.user.id
         });
@@ -116,6 +117,7 @@ export default class AuctionItem extends Component {
     });
   }
 
+<<<<<<< HEAD
   redirectToFAQ() {
     return (
         <div>
@@ -124,6 +126,8 @@ export default class AuctionItem extends Component {
       );
   }
 
+=======
+>>>>>>> 16bff927cb1b5923c1b60b7a91b428574b1e4ce5
   render () {
     
     var thisItem = this.state.item || { userId: null };
@@ -172,6 +176,7 @@ export default class AuctionItem extends Component {
             <p>Highest Bid: {this.state.bids[0] !== undefined ? '$ ' + this.state.bids[0].price.toFixed(2) : ' No Bids' }</p>
           </div>
           {(thisId === thisItem.userId) ? 
+            null :
             <div>
               <button type="button" className="btn btn-primary pull-xs-left" onClick={this.redirectToFAQ}>Edit FAQ</button>
             </div>

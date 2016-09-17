@@ -11,6 +11,7 @@ export default class BuyerItemView extends Component {
       bids: []
     };
     this.handleSubject = this.handleSubject.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this._onClick = this._onClick.bind(this);
     this.sendItemBid = this.sendItemBid.bind(this);
@@ -48,19 +49,21 @@ export default class BuyerItemView extends Component {
   sendMessage(e) {
     e.preventDefault();
     //if input is empty
-    if (this.state.newSubject === '' || this.state.newMessage === '') {
+    if (this.state.newSubject === undefined || this.state.newMessage === undefined) {
       $('#faq-error').show();
     } else {
       //send userId of buyer and seller
+      var context = this;
       $.ajax({
         method: 'POST',
-        url: 'api/messages',
-        data: {
-          item: this.props.item,
-          subject: this.state.newSubject,
-          message: this.state.newMessage,
-          fromUser: this.props.userId
-        },
+        url: '/api/messages',
+        headers: {'Content-Type': 'application/json'},
+        data: JSON.stringify({
+          subject: context.state.newSubject,
+          message: context.state.newMessage,
+          buyerId: context.props.userId,
+          sellerId: context.props.item.userId
+        }),
         success: function(data) {
           console.log("your message is posted to the server", data);
         },
@@ -116,7 +119,7 @@ export default class BuyerItemView extends Component {
         </form>
         </div>
         
-        <div className="alert alert-danger fade in" role="alert" id="bid-error">
+        <div className="alert alert-danger fade-in hidden" role="alert" id="bid-error">
             <button type="button" className="close">×</button>
             <strong>Woah! </strong>Please place a valid bid. <small>Tip: Try value higher than the current highest bid!</small>
         </div>
@@ -140,24 +143,29 @@ export default class BuyerItemView extends Component {
           <br />
         </div>
         
-
+        {this.state.toggleInput ?
+        <div className="col-md-12">
+        <h6>Message Seller: </h6>
         <div className="col-md-12 auctionTitle">
           <form class = "form-inline" role = "form">
+          <label class="sr-only" for="subject">Subject</label>
           <div class="form-group">
-          <input type="text" width="500" placeholder="Subject line" value={this.state.newSubject} onChange={this.handleSubject}/>
+          <input class="form-control" id="inputdefault" type="text" placeholder="Subject line" value={this.state.newSubject} onChange={this.handleSubject}/>
           </div>
           <div class="form-group">
-          <textarea type="text" rows='10' col="500" name="message"  placeholder="Enter your message..." value={this.state.newMessage} onChange={this.handleMessage}/>
+          <label class="sr-only" for="message">Message</label>
+          <textarea class="form-control" id="inputdefault" type="text"  placeholder="Enter your message..." value={this.state.newMessage} onChange={this.handleMessage}/>
           </div>
-          <button type="submit" className="btn-btn-default" onSubmit={this.sendMessage}>Send</button>
+          <button type="submit" className="btn-btn-default" onClick={this.sendMessage}>Send</button>
           </form>
         </div>
 
-
-        <div className="alert alert-danger fade in" role="alert" id="faq-error">
+        <div className="alert alert-danger fade-in hidden" role="alert" id="faq-error">
             <button type="button" className="close">×</button>
             <strong>Woah! </strong>Subject or message input is missing!
         </div>
+        </div>
+        : null}
 
       </div>
     );

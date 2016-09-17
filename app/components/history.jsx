@@ -11,6 +11,7 @@ export default class History extends Component {
       itemsWinningBidOn: [],
       itemsLosingBidOn: []
     };
+    this._routePage = this._routePage.bind(this);
   }
 
   componentDidMount() {
@@ -62,28 +63,61 @@ export default class History extends Component {
     });
   }
 
+  _routePage(page) {
+    this.setState({route: page});
+  }
+
   render() {
     return (
       <div>
-        <div className="dashboard-header col-xs-12"> <h2>Items You Have Won </h2> </div>
-        <div className="col-xs-12 bid-container">
-          {this.state.itemsWinningBidOn.map((winningBid, index) => {
-            return (<WinningBid old={true} key={index} parity={index % 2} item={winningBid}/>);
-          })}
+      
+        <div className="col-md-2 sidebar">
+          <h5>History</h5>
+          <hr className="col-md-10 off-set-2"/>
+          <br />
+          <h5>As a Buyer</h5>
+          <div className="filterCriteria" onClick={() => this._routePage('won')}><a href="#">Purchase History</a></div>
+          <div className="filterCriteria" onClick={() => this._routePage('lost')}><a href="#">Lost Bids</a></div>
+          <br />
+          <h5>As a Seller</h5>
+          <div className="filterCriteria" onClick={() => this._routePage('sold')}><a href="#">Sold History</a></div>
         </div>
-        <div className = "dashboard-header col-xs-12"> <h2>Items You Have Lost </h2> </div>
-        <div className="col-xs-12 bid-container" >
-          {
-            this.state.itemsLosingBidOn.map((losingBid, index) => {
+
+        <div className="col-md-8 off-set-2">
+
+        {(this.state.route === 'won') ?
+          <div className="container title">
+            <h3>Items Won in the Past</h3>
+            <br />
+            {this.state.itemsWinningBidOn.map((winningBid, index) => {
+              return (<WinningBid old={true} key={index} parity={index % 2} item={winningBid}/>);
+              })
+            }
+          </div>
+          : null}
+
+        {(this.state.route === 'lost') ?
+          <div className="container title">
+            <h3>Items You Have Lost</h3>
+            <br />
+            {this.state.itemsLosingBidOn.map((losingBid, index) => {
               return (<LosingBid old={true} key={index} parity={index % 2} item={losingBid}/>);
-            })
-          }
-        </div>
-        <div className="dashboard-header col-xs-12"> <h2> Items You have Sold </h2> </div>
-        <div className="col-xs-12 bid-container">
-        {this.state.itemsForSale.map((saleItem, index) => {
-          return (<SaleItem old={true} key={index} parity={index % 2} item={saleItem}/>);
-        }) }
+              })
+            }
+          </div>
+          : null}
+
+          {(this.state.route === 'sold') ?
+            <div className="container title">
+            <h3>Items You have Sold</h3>
+            <br />
+              {this.state.itemsForSale.map((saleItem, index) => {
+                return (<SaleItem old={true} key={index} parity={index % 2} item={saleItem}/>);
+                }) 
+              }
+            </div>
+          : null}
+
         </div>
       </div>
     );
