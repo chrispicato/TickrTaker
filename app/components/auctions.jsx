@@ -26,7 +26,6 @@ export default class Auction extends Component {
       entrys: entryArray,
       allEntries: entryArray
     });
-    console.log(this.state);
   }
 
   grabAuctions (e) {         // Ajax request for auction searching by using search-bar
@@ -59,9 +58,11 @@ export default class Auction extends Component {
     this.setState({
       entrys: filtered
     });
+    this.render();
   }
 
   filterEntriesByTime (e) {
+    var context = this;
     var filterValue = e.target.innerHTML;
     var compareDate = new Date();
 
@@ -89,7 +90,7 @@ export default class Auction extends Component {
     });
   }
 
-  clearFilter(e) {
+  clearFilter (e) {
     this.setState({
       entrys: this.state.allEntries
     });
@@ -99,17 +100,17 @@ export default class Auction extends Component {
     e.preventDefault();
     var sorter = e.target.value;
     if (sorter !== "") {
-      if (sorter === "priceHigh") {
+      if (sorter === "endPrice") {
         var x = this.state.entrys.sort(function (a, b) {
-          return a.price > b.price;
+          return a.endPrice > b.endPrice;
         });
         this.setState({
           entrys: x
         });
       }
-      if (sorter === "priceLow") {
+      if (sorter === "startPrice") {
         var x = this.state.entrys.sort(function (a, b) {
-          return a.price < b.price;
+          return a.startPrice > b.startPrice;
         });
         this.setState({
           entrys: x
@@ -151,10 +152,8 @@ export default class Auction extends Component {
                 <h3></h3>
                 <select onChange={this.sortEntries}>
                   <option value="">All</option>
-                  <option value="">All</option>
-                  <option value="">All</option>
-                  <option value="priceHigh">Price: High to Low</option>
-                  <option value="priceLow">Price: Low to High</option>
+                  <option value="startPrice">Low to High: Starting Price</option>
+                  <option value="endPrice">Low to High: Ending Price</option>
                   <option value="newest">Newer Items First</option>
                   <option value="oldest">Older Items First</option>
                 </select>
@@ -162,12 +161,14 @@ export default class Auction extends Component {
             </div>
           </div>
           <div className="sidebar col-md-2 filter-side">
-            <Filters className="bid-container" clickHandlerCategory={this.filterEntriesByCategory} clickHandlerTime={this.filterEntriesByTime} clearFilter={this.clearFilter}/>
+            <Filters className="bid-container" clickHandlerCategory={this.filterEntriesByCategory} 
+              clickHandlerTime={this.filterEntriesByTime} clearFilter={this.clearFilter} 
+              toggleCategories={this.showCategories} toggleTimes={this.showTimes} showCategories={this.state.showCategories} 
+              showTimes={this.state.showTimes} />
           </div> 
           <div className="auction-listings col-md-8 off-set-2">
             {
               this.state.entrys.map((entry, i) => {
-                console.log(entry);
                 return (<AuctionEntry key={i} parity={i % 2} item={entry} auth={this.props.auth} />);
               })
             }

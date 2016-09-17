@@ -6,8 +6,8 @@ export default class Inbox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buyerMessages: ['buyer messge one', 'buyer message two'],
-      sellerMessages: ['seller message', 'seller message two']
+      buyerMessages: [],
+      sellerMessages: []
     };
   }
 
@@ -19,18 +19,12 @@ export default class Inbox extends Component {
         //filter messages as a buyer and as a seller
         console.log('what is messages like? ------>', messages);
         messages.forEach(function(item) {
-          if (item.isSeller) {
-            var entry = {
-              subject: item.subject,
-              message: item.message
-            };
-            this.setState({sellerMessages: entry});
+          //if i am the seller
+          if (item.seller === this.props.userId) {
+            this.state.sellerMessages.push(item);
           } else {
-            var entry = {
-              subject: item.subject,
-              message: item.message
-            };
-            this.setState({buyerMessages: entry});
+            //if i am the buyer
+            this.state.buyerMessages.push(item);
           }
         });
       },
@@ -38,25 +32,55 @@ export default class Inbox extends Component {
         console.log('There is an error, it\'s a sad day D=');
       }
     });
+    var filteredSellerMessages = this.filterMessages(this.state.sellerMessages);
+    var filteredBuyerMessages = this.filterMessages(this.state.buyerMessages);
+    this.setState({
+      filteredSellerMessages: filteredSellerMessages,
+      filteredBuyerMessages: filteredBuyerMessages
+    })
+  }
 
+  filterMessages(messages) {
+    //find out number of convos
+    var convos = [];
+    var results = [];
+    messages.forEach(function(item) {
+      if (convos.indexOf(item.conversation) === -1) {
+        convos.push(item.conversation);
+      }
+    });
+    //filter by convo
+    convos.forEach(function(convo) {
+      results.push(messages.filter(function(message) {
+          return messages.conversation === convo;
+        })
+      );
+    });
+    //return array of array messages object [ [ {convo1 mes1}, {convo1 mes2} ], [ {convo2 mes1} ] ]
+    return results;
   }
 
   render() {
     return (
         <div className="col-md-12">
+          {/* seller messages */}
           <h5>Your Auction Listing</h5>
-            {this.state.sellerMessages.map((item, index) => {
+            {this.state.filteredSellerMessages.map((convo, index) => {
               return (
-                <Message isSeller={true} subject={item.subject} message={item.message} key={index} parity={index % 2}/>
+                <Message convo={convo} key={index} parity={index % 2}/>
+                );
+              })
+            }
+
+          {/* buyer messages */}
+          <h5>Auctions you are interested in</h5>
+            {this.state.buyerMessages.map((convo, index) => {
+              return (
+                  <Message convo={convo} key={index} parity={index % 2}/>
                 );
             })
           }
-          <h5>Auctions you are interested in</h5>
-            {this.state.buyerMessages.map((item, index) => {
-              return (
-                  <Message isSeller={false} subject={item.subject} message={item.message} key={index} parity={index % 2}/>
-                );
-            })}
+
         </div>
       );
   }

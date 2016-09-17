@@ -1,5 +1,5 @@
 var Sequelize = require('sequelize');
-var db = new Sequelize('postgres://christopherpicato:password@localhost:5432/tickr');
+var db = new Sequelize('postgres://ubuntu:password@localhost:5432/tickr');
 var moment = require('moment');
 
 //  Get controllers for users, items, bids.
@@ -60,7 +60,7 @@ db.sync({force: true})
         endPrice: 100.00,
         endDate: '2016-09-13T00:00Z',
         auctionEndDateByHighestBid: '2016-09-13T00:00Z',
-        category: 'Beauty, Health & Grocery'
+        category: 'Beauty, Health and Grocery'
       }).then(function (item) {
         lex.addItem(item);
       });
@@ -73,7 +73,7 @@ db.sync({force: true})
         endPrice: 1.00,
         endDate: '2016-09-13T17:00Z',
         auctionEndDateByHighestBid: '2016-09-13T17:00Z',
-        category: 'Home, Garden & Tools'
+        category: 'Home, Garden and Tools'
       }).then(function (item) {
         seller.addItem(item);
       });
@@ -84,7 +84,7 @@ db.sync({force: true})
         picture: 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473717931/item_photos/dsnyockmsy6enburpyjt.png',  
         startPrice: 10000000.00,
         endPrice: 1000000.00,
-        category: 'Home, Garden & Tools'
+        category: 'Home, Garden and Tools'
       }).then(function (item) {
         seller.addItem(item);
       });
@@ -95,7 +95,7 @@ db.sync({force: true})
         picture: 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473718163/item_photos/sxyqw1yolsfbvzdkvhjr.png',  
         startPrice: 20000.00,
         endPrice: 1000.00,
-        category: 'Home, Garden & Tools'
+        category: 'Home, Garden and Tools'
       }).then(function (item) {
         seller.addItem(item);
       });
@@ -106,7 +106,7 @@ db.sync({force: true})
         picture: 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473717788/item_photos/wqifur3lxghuzoysy8c2.jpg',  
         startPrice: 999.00,
         endPrice: 1.00,
-        category: 'Home, Garden & Tools'
+        category: 'Home, Garden and Tools'
       })
       .then(function(item) {
         seller.addItem(item);

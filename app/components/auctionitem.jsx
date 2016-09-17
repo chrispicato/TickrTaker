@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {browserHistory} from 'react-router';
 import {calcPrice, calcTime} from '../helpers.js';
+import BuyerItemView from './buyerItemView.jsx';
+import ManageFAQ from './manageFAQ.jsx';
 
 export default class AuctionItem extends Component {
   constructor (props) {
@@ -10,17 +12,19 @@ export default class AuctionItem extends Component {
       currentPrice: undefined,
       bids: [],
       timeRemaining: undefined,
-      toggleComment: false
+      userId: ''
     };
+
+    this.getUser = this.getUser.bind(this);
     this.getItem = this.getItem.bind(this);
     this.getItemBids = this.getItemBids.bind(this);
     this.calcPrice = this.calcPrice.bind(this);
     this.calcTime = this.calcTime.bind(this);
-    this.sendItemBid = this.sendItemBid.bind(this);
+    //this.sendItemBid = this.sendItemBid.bind(this);
   }
+  
   componentWillMount () {      // Set state properties with updated values that were calculated with calcTime and calcPrice
-
-
+    this.getUser();
     this.getItemBids();
     this.getItem();
     this.setState({
@@ -28,9 +32,8 @@ export default class AuctionItem extends Component {
       timeRemaining: this.calcTime()
     });
   }
-  
+
   componentDidMount () {       //  Set state properties with calculated values
-    
     $('img').on('error', function(){ //  Replace broken image links with the sample image
         $(this).attr('src', 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473715896/item_photos/zfaehmp20xculww4krs6.jpg');
     });
@@ -39,6 +42,7 @@ export default class AuctionItem extends Component {
       currentPrice: '$  ' + this.calcPrice().toFixed(2),
       timeRemaining: this.calcTime()
     }), 1000);
+
   }
 
   componentWillUnmount () {    // Clears up DOM elements that were created in ComponentDidMount method
@@ -67,6 +71,22 @@ export default class AuctionItem extends Component {
     }
   }
 
+  getUser () {
+    var context = this;
+    $.ajax({
+      method: 'GET',
+      url: '/api/user_data',
+      success: function(user) {
+        context.setState({
+          userId: user.user.id
+        });
+      },
+      error: function(err) {
+        console.log('There is an error, it\'s a sad day! D=');
+      }
+    });
+  }
+
   getItem () {          // Ajax request to retrieve items from database
     var context = this;
     $.ajax({
@@ -74,7 +94,9 @@ export default class AuctionItem extends Component {
       url: '/api/singleitem/' + this.props.params.id,
       headers: {'Content-Type': 'application/json'},
       success: function (res) {
-        context.setState({item: res});
+        context.setState({
+          item: res
+        });
       }
     });
   }
@@ -94,70 +116,52 @@ export default class AuctionItem extends Component {
     });
   }
 
-  sendItemBid(e) {     // Ajax request to bid on an item
-    e.preventDefault();
-    if (this.state.bids[0] === undefined || $('#bid').val() >= this.state.bids[0].price + 1 && $('#bid').val() !== '') {
-      var context = this;
-      var newBids = this.state.bids.slice();
-      newBids.push($('#bid').val());
-      $.ajax({
-        method: 'GET',
-        url: '/api/user_data',
-        success: function(user) {
-          $.ajax({
-            method: 'POST',
-            url: '/api/items/bids/' + context.props.params.id,
-            headers: {'Content-Type': 'application/json'},
-            data: JSON.stringify({
-              user: user, 
-              bid: $('#bid').val()}),
-            success: function (res) {
-              $('#bid').val('');
-              console.log(res);
-              context.getItem();
-              context.getItemBids();
-              context.setState({
-                bids: newBids
-              });
-            }
-          });
-        }
-      });
-    } else {
-      $('#bid-error').show();
-    }
-  }
+  // sendItemBid(e) {     // Ajax request to bid on an item
+  //   e.preventDefault();
+  //   if (this.state.bids[0] === undefined || $('#bid').val() >= this.state.bids[0].price + 1 && $('#bid').val() !== '') {
+  //     var context = this;
+  //     var newBids = this.state.bids.slice();
+  //     newBids.push($('#bid').val());
+  //     $.ajax({
+  //       method: 'GET',
+  //       url: '/api/user_data',
+  //       success: function(user) {
+  //         $.ajax({
+  //           method: 'POST',
+  //           url: '/api/items/bids/' + context.props.params.id,
+  //           headers: {'Content-Type': 'application/json'},
+  //           data: JSON.stringify({
+  //             user: user, 
+  //             bid: $('#bid').val()}),
+  //           success: function (res) {
+  //             $('#bid').val('');
+  //             console.log(res);
+  //             context.getItem();
+  //             context.getItemBids();
+  //             context.setState({
+  //               bids: newBids
+  //             });
+  //           }
+  //         });
+  //       }
+  //     });
+  //   } else {
+  //     $('#bid-error').show();
+  //   }
+  // }
 
-  handleSubject(e) {
-    this.setState({subject: e.target.value});
-  }
-
-  handleMessage(e) {
-    this.setState({message: e.target.value});
-  }
-
-  sendMessage(e) {
-    e.preventDefault();
-    $.ajax({
-      method: 'POST',
-      url: 'api/messages',
-      data: {
-        item: this.state.item,
-        subject: this.state.subject,
-        message: this.state.message
-      },
-      success: function(data) {
-        console.log("your message is posted to the server", data);
-      },
-      error: function(err) {
-        console.log("There is an error. It\'s a sad day! D=")
-      }
-    });
+  redirectToFAQ() {
+    return (
+        <div>
+          <ManageFAQ userId={this.state.userId}/>
+        </div>
+      );
   }
 
   render () {
     
-    var thisItem = this.state.item || {};
+    var thisItem = this.state.item || { userId: null };
+    var thisId = this.state.userId || '';
     var startDate = new Date(Date.parse(thisItem.startDate));
     var startDateFormatted = startDate.getMonth() + '/' + startDate.getDate() + '/' + startDate.getFullYear() + '  ' + startDate.getHours() % 12 + ':' + ((startDate.getMinutes() < 10) ? '0' + startDate.getMinutes() : startDate.getMinutes()) + (startDate.getHours() > 12 ? ' PM' : ' AM');
     var endDate = new Date(Date.parse(thisItem.auctionEndDateByHighestBid));
@@ -201,39 +205,15 @@ export default class AuctionItem extends Component {
           <div className="col-md-12 auctionTitle">
             <p>Highest Bid: {this.state.bids[0] !== undefined ? '$ ' + this.state.bids[0].price.toFixed(2) : ' No Bids' }</p>
           </div>
-          <br />
-          <div className="col-md-12 auctionTitle">
-          <form id="bid-form" onSubmit={this.sendItemBid}>
-            <div >Enter Bid <input id="bid" type="number" step = "0.01" placeholder="Enter a bid"></input> </div>
-            <button type="button" className="btn btn-primary pull-xs-right" onClick={this.sendItemBid}> Submit Bid</button>
-          </form>
-          </div>
-          <br />
-          <div className="col-md-12 auctionTitle">
-            <h4>FAQ</h4>
-            <p><strong>Question 1?</strong></p>
-            <p>Answer 1</p>
-          </div>
-
-          <div className="col-md-12 auctionTitle">
-            <p>Still have questions about this item?</p>
-            <button type="button" className="btn btn-primary pull-xs-left">contact Seller</button>
-            <br />
-          </div>
-
-          <div className="col-md-12 auctionTitle">
-            <form>
-            <input type="text" width="500" placeholder="Subject line" value={this.state.subject} onChange={this.handleSubject}/>
-            <br />
-            <textarea type="text" rows='10' col="500" name="message"  placeholder="Enter your message..." value={this.state.message} onChange={this.handleMessage}/>
-            <input type="submit" value="Send"/>
-            </form>
-          </div>
-          
-          <div className="alert alert-danger fade in" role="alert" id="bid-error">
-              <button type="button" className="close">×</button>
-              <strong>Woah! </strong>Please place a valid bid. <small>Tip: Try value higher than the current highest bid!</small>
-          </div>
+          {(thisId === thisItem.userId) ? 
+            <div>
+              <button type="button" className="btn btn-primary pull-xs-left" onClick={this.redirectToFAQ}>Edit FAQ</button>
+            </div>
+            :
+            <div>
+              <BuyerItemView userId={thisId} item={thisItem}/>
+            </div>
+          }
 
         </div>
         </div>

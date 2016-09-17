@@ -58,7 +58,7 @@ export default class SaleItem extends Component {   //  This components displays
 
   render () {
     var button;
-    console.log(this.props.item);
+  //console.log(this.props.item);
     var id = '/item/' + this.props.item.id;
     return (
       <div className={this.props.parity ? 'bid-entry auction-entry-odd col-xs-12' : 'bid-entry auction-entry-even col-xs-12'}>
