@@ -11,7 +11,6 @@ export default class BuyerItemView extends Component {
       bids: []
     };
     this.handleSubject = this.handleSubject.bind(this);
-    this.handleSubject = this.handleSubject.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this._onClick = this._onClick.bind(this);
     this.sendItemBid = this.sendItemBid.bind(this);
