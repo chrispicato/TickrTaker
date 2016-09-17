@@ -20,14 +20,17 @@ export default class AuctionEntry extends Component {
   
   componentDidMount () {    //  Set state properties with calculated values
     $('img').on('error', function(){ //  Replace broken image links with the sample image
-      $(this).attr('src', 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473715896/item_photos/zfaehmp20xculww4krs6.jpg');
+        $(this).attr('src', 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473715896/item_photos/zfaehmp20xculww4krs6.jpg');
     });
+    
     this.interval = setInterval(() => this.setState({
       currentPrice: '$  ' + this.calcPrice().toFixed(2),
       timeRemaining: this.calcTime()
     }), 1000);
-  }
+    this.calcPrice = this.calcPrice.bind(this);
+    this.calcTime = this.calcTime.bind(this);
 
+  }
   componentWillUnmount () {    // Clears up DOM elements that were created in ComponentDidMount method
     this.interval && clearInterval(this.interval);
     this.interval = false;

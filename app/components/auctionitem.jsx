@@ -53,11 +53,13 @@ export default class AuctionItem extends Component {
     var thisItem = this.state.item;
     if (thisItem) {
       //only run calculations when item is loaded
-      if (this.state.bids.length > 0 && this.state.bids[0].price > thisItem.endPrice) {
-        return calcPrice(thisItem.startPrice, this.state.bids[0].price, thisItem.startDate, thisItem.endDate);
-      } else {
-        return calcPrice(thisItem.startPrice, thisItem.endPrice, thisItem.startDate, thisItem.endDate);
+      var calced = calcPrice(thisItem.startPrice, thisItem.endPrice, thisItem.startDate, thisItem.endDate);
+      if (this.state.bids.length > 0) {
+        if (calced < this.state.bids[0].price) {
+          return parseInt(this.state.bids[0].price);
+        }
       }
+      return calced;
     } else {
       return 0;
     }
