@@ -15,7 +15,7 @@ export default class Cart extends Component {
     setTimeout(function () {
       context.props.winningBids.forEach(function (item) {
         context.setState({
-          sum: context.state.sum + item.highestBid
+          sum: (context.state.sum + item.highestBid).toFixed(2)
         });
         
       });
@@ -29,7 +29,7 @@ export default class Cart extends Component {
   render () {
     return (
       <div>
-        <h5>Subtotal: {this.state.sum}</h5>
+        <h5>Subtotal: $</h5><h5 id="subtotal">{this.state.sum}</h5>
       </div>
     );
   }

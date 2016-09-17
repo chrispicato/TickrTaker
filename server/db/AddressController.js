@@ -13,7 +13,8 @@ module.exports = (db, Sequelize, User) => {
     country: Sequelize.STRING,
     phoneNumber: Sequelize.STRING,
     stripeDateCreated: Sequelize.STRING,
-    stripeId: Sequelize.STRING
+    stripeId: Sequelize.STRING,
+    amount: Sequelize.STRING
     
   });
 
@@ -32,7 +33,8 @@ module.exports = (db, Sequelize, User) => {
       country: req.body.country,
       phoneNumber: req.body.phoneNumber,
       stripeDateCreated: req.body.stripeDateCreated,
-      stripeId: req.body.stripeId
+      stripeId: req.body.stripeId,
+      amount: req.body.amount
     }).then(address => {
       User.find({where: {id: req.body.id}})
       .then(user => {

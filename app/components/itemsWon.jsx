@@ -82,7 +82,7 @@ export default class ItemsWon extends Component {
         </div>
 
         <div className="col-xs-12 payment-container">
-          <Payment paymentChange={this.props.paymentChange} submitPayment={this.props.submitPayment} winningBids={this.state.itemsWinningBidOn} />
+          <Payment paymentChange={this.props.paymentChange} submitPayment={this.props.submitPayment} winningBids={this.state.itemsWinningBidOn} subtotal={this.props.subtotal}/>
         </div>
       </div>
     );

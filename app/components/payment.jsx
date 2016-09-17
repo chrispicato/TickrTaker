@@ -48,7 +48,7 @@ export default class Payment extends Component {
           </div>
 
           <div className="col-xs-12 payment-container">
-            <Cart winningBids={this.props.winningBids} submitPayment={this.props.submitPayment}/>
+            <Cart winningBids={this.props.winningBids} submitPayment={this.props.submitPayment} />
           </div>
 
           <input type="submit" className="submit" value="Submit Payment" id="form-submit-disable" />

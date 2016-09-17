@@ -19,7 +19,8 @@ export default class Dashboard extends Component {
         cvc: '',
         exp_month: '',
         exp_year: ''
-      }
+      },
+      subtotal: ''
     };
     this._routePage = this._routePage.bind(this);
     // this.paymentChange = this.paymentChange.bind(this);
@@ -109,6 +110,7 @@ export default class Dashboard extends Component {
     var zip = $('#shipping-info-zip').val();
     var country = $('#shipping-info-country').val();
     var phoneNumber = $('#shipping-info-phone-number').val();
+    var amount = $('#subtotal').text();
 
     var shipping = {
       id: this.state.userId,
@@ -121,8 +123,11 @@ export default class Dashboard extends Component {
       country: country,
       phoneNumber: phoneNumber,
       stripeDateCreated: null,
-      stripeId: null
+      stripeId: null,
+      amount: amount
     };
+
+    console.log(shipping);
 
     var context = this;
     Stripe.createToken(card, function (status, response) {
@@ -132,23 +137,28 @@ export default class Dashboard extends Component {
       context.setState({
         payment: payment
       });
-      $.ajax({
-        method: 'POST',
-        url: 'api/addresses',
-        headers: {'Content-Type': 'application/json'},
-        data: JSON.stringify(shipping),
-        success: function () {
-          console.log('Your shipping info has been saved');
-        },
-        error: function (error) {
-          console.log(error);
-        }
-      });
+      if (response.error) {
+        $('.payment').append('<h5 class="payment-validity">Your payment information is not valid</h5>');
+      } else {
+        $.ajax({
+          method: 'POST',
+          url: 'api/addresses',
+          headers: {'Content-Type': 'application/json'},
+          data: JSON.stringify(shipping),
+          success: function () {
+            console.log('Your shipping info has been saved');
+            $('#form-submit-disable').prop('disabled', true);
+            $('.payment-validity').remove();
+            $('.payment').append('<h5>Your payment has been submitted</h5>');
+          },
+          error: function (error) {
+            console.log(error);
+          }
+        });
+      }
       console.log(status, response);
     });
 
-    $('#form-submit-disable').prop('disabled', true);
-    $('.payment').append('<h5>Your payment has been submitted</h5>');
 
   }
 
@@ -174,7 +184,7 @@ export default class Dashboard extends Component {
         <div className="col-md-8 off-set-2">
         {(this.state.route === 'itemsWon') ?
           <div>
-            <ItemsWon userId={this.state.userId} paymentChange={this.paymentChange} submitPayment={this.submitPayment} submitted={this.state.submitted}/>
+            <ItemsWon userId={this.state.userId} paymentChange={this.paymentChange} submitPayment={this.submitPayment} submitted={this.state.submitted} />
           </div> : null}
 
         {(this.state.route === 'winning') ? 
