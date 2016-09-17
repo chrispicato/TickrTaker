@@ -116,8 +116,7 @@ export default class AuctionItem extends Component {
       }
     });
   }
-
-<<<<<<< HEAD
+  
   redirectToFAQ() {
     return (
         <div>
@@ -126,8 +125,6 @@ export default class AuctionItem extends Component {
       );
   }
 
-=======
->>>>>>> 16bff927cb1b5923c1b60b7a91b428574b1e4ce5
   render () {
     
     var thisItem = this.state.item || { userId: null };
