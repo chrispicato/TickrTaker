@@ -210,7 +210,7 @@ export default class Dashboard extends Component {
             }
           </div> : null}
 
-        {(this.state.route === 'OnAuction title') ?
+        {(this.state.route === 'OnAuction') ?
           <div className="container title">
           <h3>Items on Auction</h3>
           <br />

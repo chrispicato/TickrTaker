@@ -7,79 +7,132 @@ export default class Inbox extends Component {
     super(props);
     this.state = {
       buyerMessages: [],
-      sellerMessages: []
+      sellerMessages: [],
+      filteredSellerMessages: {},
+      filteredBuyerMessages: {},
+      noMessage: false
     };
+      // this.createSellerConvo = this.createSellerConvo.bind(this);
+      // this.createbuyerConvo = this.createbuyerConvo.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    var context = this;
+    //console.log('user ID----->', this.props.userId);
     $.ajax({
       method: 'GET',
-      url: 'api/messages' + this.props.userId,
+      url: 'api/messages/' + this.props.userId,
       success: function(messages) {
         //filter messages as a buyer and as a seller
-        console.log('what is messages like? ------>', messages);
+        var buyer = [];
+        var seller = [];
+        if (messages.length === 0) {
+          context.setState({noMessage: true})
+        }
         messages.forEach(function(item) {
           //if i am the seller
-          if (item.seller === this.props.userId) {
-            this.state.sellerMessages.push(item);
+          if (item.seller === context.props.userId) {
+            seller.push(item);
           } else {
             //if i am the buyer
-            this.state.buyerMessages.push(item);
+            buyer.push(item);
           }
         });
+        context.setState({
+          buyerMessages: buyer,
+          sellerMessages: seller
+        })
+  
+        var filteredSellerMessages = context.filterMessages(context.state.sellerMessages);
+        var filteredBuyerMessages = context.filterMessages(context.state.buyerMessages);
+        context.setState({
+          filteredSellerMessages: filteredSellerMessages,
+          filteredBuyerMessages: filteredBuyerMessages
+        })
       },
       error: function(err) {
         console.log('There is an error, it\'s a sad day D=');
       }
     });
-    var filteredSellerMessages = this.filterMessages(this.state.sellerMessages);
-    var filteredBuyerMessages = this.filterMessages(this.state.buyerMessages);
-    this.setState({
-      filteredSellerMessages: filteredSellerMessages,
-      filteredBuyerMessages: filteredBuyerMessages
-    })
   }
 
   filterMessages(messages) {
-    //find out number of convos
-    var convos = [];
-    var results = [];
+    var convos = {};
+    //arrage messages by conversations, if conversation# does not exist create one and push mesage to array
+    //{ converation#: [{mes1}, {mes2}] }
+
     messages.forEach(function(item) {
-      if (convos.indexOf(item.conversation) === -1) {
-        convos.push(item.conversation);
+      if (convos.hasOwnProperty(item.conversation)) {
+        convos[item.conversation].push(item);
+      } else {
+        convos[item.conversation] = [item];
       }
     });
-    //filter by convo
-    convos.forEach(function(convo) {
-      results.push(messages.filter(function(message) {
-          return messages.conversation === convo;
-        })
-      );
-    });
-    //return array of array messages object [ [ {convo1 mes1}, {convo1 mes2} ], [ {convo2 mes1} ] ]
-    return results;
+
+    return convos;
+  }
+
+  createSellerConvo(){
+    for (var key in this.state.filteredSellerMessages) {
+      return (
+        <div>
+          <Message userId={this.props.userId} convo={this.state.filteredSellerMessages[key]} key={key}/>
+        </div>
+        );
+    }    
+  }
+
+  createBuyerConvo(){
+    for (var key in this.state.filteredBuyerMessages) {
+      return (
+        <div>
+          <Message userId={this.props.userId} convo={this.state.filteredBuyerMessages[key]} key={key}/>
+        </div>
+        );
+    }    
   }
 
   render() {
     return (
         <div className="col-md-12">
+        {this.state.noMessage ?
+
+          <div>
+          <br/ >
+          <h6> You have no messages </h6>
+          </div>
+          :
+          <div>
           {/* seller messages */}
-          <h5>Your Auction Listing</h5>
-            {this.state.filteredSellerMessages.map((convo, index) => {
-              return (
-                <Message convo={convo} key={index} parity={index % 2}/>
-                );
-              })
-            }
+          <h5 className="text-muted">Your Auction Listing</h5>
+          {(this.state.sellerMessages.length === 0) ?
+            <div>
+              <br />
+              <h6>you have zero message</h6>
+              <br />
+            </div> 
+            :
+            <div>
+            {this.createSellerConvo()}
+            </div>
+          }
 
           {/* buyer messages */}
-          <h5>Auctions you are interested in</h5>
-            {this.state.buyerMessages.map((convo, index) => {
-              return (
-                  <Message convo={convo} key={index} parity={index % 2}/>
-                );
-            })
+          <h5 className="text-muted">Auctions you are interested in</h5>
+          {(this.state.buyerMessages.length === 0) ?
+            <div>
+            <br />
+            <h6>you have zero message</h6>
+            <br />
+            </div> 
+            :
+            <div>
+            {this.createBuyerConvo()}
+            </div>
           }
+          </div>
+
+        }
 
         </div>
       );

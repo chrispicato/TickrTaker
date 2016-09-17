@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import AuctionEntry from './auctionentry.jsx';
 import Filters from './filters.jsx';
+import SearchBox from './searchBox.jsx';
 
 export default class Auction extends Component {
   constructor(props) {
@@ -142,10 +143,7 @@ export default class Auction extends Component {
           <div className="auction-header col-xs-12">
             <h3 className="col-xs-3 pull-xs-left">Current Auctions</h3>
             <div className="col-xs-5 pull-xs-right">
-              <form className="search-form" onSubmit={this.grabAuctions.bind(this)}>
-                <input id="search" className="col-xs-6" />
-                <div className="col-xs-5 search-text">Search:</div>
-              </form>
+              <SearchBox className="search-form" grabAuctions={this.grabAuctions.bind(this)}/>
             </div>
             <div className="col-xs-3">
               <form>

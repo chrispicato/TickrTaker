@@ -15,7 +15,7 @@ export default class SaleItem extends Component {   //  This components displays
     console.log(this.props.item);
   }
 
-  componentDidMount () {
+  componentWillMount () {
     $('img').on('error', function(){ //  Replace broken image links with the sample image
         $(this).attr('src', 'http://res.cloudinary.com/dijpyi6ze/image/upload/v1473715896/item_photos/zfaehmp20xculww4krs6.jpg');
     });

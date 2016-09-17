@@ -65,6 +65,10 @@ export default class BuyerItemView extends Component {
           sellerId: context.props.item.userId
         }),
         success: function(data) {
+          context.setState({
+            newSubject: '',
+            newMessage: ''
+          })
           console.log("your message is posted to the server", data);
         },
         error: function(err) {
@@ -148,12 +152,11 @@ export default class BuyerItemView extends Component {
         <h6>Message Seller: </h6>
         <div className="col-md-12 auctionTitle">
           <form class = "form-inline" role = "form">
-          <label class="sr-only" for="subject">Subject</label>
           <div class="form-group">
           <input class="form-control" id="inputdefault" type="text" placeholder="Subject line" value={this.state.newSubject} onChange={this.handleSubject}/>
           </div>
+          <br />
           <div class="form-group">
-          <label class="sr-only" for="message">Message</label>
           <textarea class="form-control" id="inputdefault" type="text"  placeholder="Enter your message..." value={this.state.newMessage} onChange={this.handleMessage}/>
           </div>
           <button type="submit" className="btn-btn-default" onClick={this.sendMessage}>Send</button>

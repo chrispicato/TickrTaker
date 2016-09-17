@@ -6437,7 +6437,6 @@ body {
 
 .search-form {
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
 }
 
@@ -6763,4 +6762,20 @@ hr {
 
 .hidden {
   display: none;
+}
+
+.suggest {
+  position: absolute;
+  top: 30px;
+  left: 15px;
+  height: auto;
+  width: 47.5%;
+  z-index: 9999;
+  background-color: #FFF;
+  border: 1px solid grey;
+  box-shadow: 2px 2px 2px #888888;
+}
+
+.suggestion-item {
+  border-bottom: 1px solid #aaa; 
 }

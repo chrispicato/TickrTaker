@@ -16,26 +16,32 @@ export default class Message extends Component {
 
   handleMessage(e) {
     this.setState({message: e.target.value});
-
   }
 
   sendMessage(e) {
     e.preventDefault();
     //if input is empty
-    if (this.state.subject === '' || this.state.message === '') {
+    if (this.state.subject === undefined || this.state.message === undefined) {
       $('#message-error').show();
     } else {
       //send userId of buyer and seller
+    var context = this;
       $.ajax({
         method: 'POST',
-        url: 'api/messages',
-        data: {
-          item: this.props.item,
-          subject: this.state.subject,
-          message: this.state.message,
-          fromUser: this.props.userId
-        },
+        url: '/api/convomessages',
+        headers: {'Content-Type': 'application/json'},
+        data: JSON.stringify({
+          conversation: context.props.key,
+          subject: context.state.subject,
+          message: context.state.message,
+          buyerId: context.props.convo.buyer,
+          sellerId: context.props.convo.seller
+        }),
         success: function(data) {
+          context.setState({
+            subject: '',
+            message: ''
+          })
           console.log("your message is posted to the server", data);
         },
         error: function(err) {
@@ -48,17 +54,21 @@ export default class Message extends Component {
   render() {
     return (
         <div className="col-md-12 msg-container">
-          <h4>{this.props.convo[0].subject}</h4>
-          {this.props.convo.forEach(function(message) {
+          <br />
+          <h6>Subject: {this.props.convo[0].subject}</h6>
+          <br />
+          {this.props.convo.map((message) => {
             return (
               <div>
-                {this.props.message}
+                Message: {message.message}
+                <br />              
               </div>
               )
             })
           }
 
         <div className="col-md-12 auctionTitle">
+          <br />
           <button type="button" className="btn btn-primary pull-xs-left" onClick={() => this.setState({toggleReply: !this.state.toggleReply})}>Reply</button>
           <br />
         </div>
@@ -67,12 +77,11 @@ export default class Message extends Component {
         <div className="col-md-12 auctionTitle">
           <form class = "form-inline" role = "form">
             <div class="form-group">
-              <label class="sr-only" for="subject">Subject</label>
               <input class="form-control" id="inputdefault" type="text" placeholder="Enter the subject..." value={this.state.subject} onChange={this.handleSubject}/>
             </div>
+            <br />
             <div class="form-group">
-              <label class="sr-only" for="message">Message</label>
-              <textarea class="form-control" id="inputdefault" type="text" rows='10' placeholder="Enter your message..." value={this.state.message} onChange={this.handleMessage}/>
+              <textarea class="form-control" id="inputdefault" type="text" placeholder="Enter your message..." value={this.state.message} onChange={this.handleMessage}/>
             </div>
             <button type="submit" className="btn-btn-default" onSubmit={this.sendMessage}>Send</button>
           </form>

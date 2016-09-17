@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Message from './message.jsx'
 
 export default class ManageFAQ extends Component {
   constructor(props) {
@@ -6,24 +7,26 @@ export default class ManageFAQ extends Component {
     this.state = {
       question:'',
       answer: '',
-      faq: [{question: 'how are you?', answer: 'i am very sleepy'}]
+      faq: []
     }
   }
 
   componentWillMount() {
     //fetch FAQ, picture and title passing itemId
-    // this.props.itemsForSale.forEach(function(item) {
-    //   $.ajax({
-    //     method: 'GET',
-    //     url: '/api/faq/' + item.id,
-    //     success: function(data) {
-    //       this,state.faq.push(data);
-    //     },
-    //     error: function(err) {
-    //       console.log('There is an error, it\'s a sad day! D=');
-    //     }
-    //   })     
-    // })
+    var faqArray = [];
+    this.props.itemsForSale.forEach(function(item) {
+      $.ajax({
+        method: 'GET',
+        url: '/api/faq/' + item.id,
+        success: function(data) {
+          faqArray.push(data);
+        },
+        error: function(err) {
+          console.log('There is an error, it\'s a sad day! D=');
+        }
+      })     
+    })
+    this.setState({faq: faqArray});
   }
 
   //edit data
@@ -50,11 +53,13 @@ export default class ManageFAQ extends Component {
   }
 
   render() {
-    if (false) {
-      //no messages return null
-    } else {
-
     return (
+      <div>
+      {(this.state.faq.length === 0) ? 
+        <div className="col-md-12 auctionTitle">
+        <h6>You have no items on Sale</h6>
+        </div>
+        :
       <div className="container auction-item-container">
       <div className="row">
         {this.props.itemsForSale.map((item, index) => {
@@ -93,7 +98,9 @@ export default class ManageFAQ extends Component {
           })
         }
         </div>
-    </div>
-    )}
+      </div>
+      }
+      </div>
+    );
   }
 }
