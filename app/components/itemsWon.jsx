@@ -34,8 +34,9 @@ export default class ItemsWon extends Component {
           data: JSON.stringify(user),
           success: function(items) {
             console.log('items are', items);
-            context.setState({'itemsForSale': items  
-                            });
+            context.setState({
+              'itemsForSale': items  
+            });
           },
           error: function(err) {
             console.log(err);

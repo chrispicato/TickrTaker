@@ -19,7 +19,7 @@ export default class Dashboard extends Component {
         cvc: '',
         exp_month: '',
         exp_year: ''
-      }
+      },
     };
     this._routePage = this._routePage.bind(this);
     // this.paymentChange = this.paymentChange.bind(this);
@@ -101,12 +101,6 @@ export default class Dashboard extends Component {
       exp_year: exp_year
     };
 
-    Stripe.createToken(card, function (status, response) {
-      console.log(status, response);
-    });
-
-    $('#form-submit-disable').prop('disabled', true);
-
     // ajax request for shipping info
     var name = $('#shipping-info-name').val();
     var addressLine1 = $('#shipping-info-address-line-1').val();
@@ -126,22 +120,35 @@ export default class Dashboard extends Component {
       state: state,
       zip: zip,
       country: country,
-      phoneNumber: phoneNumber
+      phoneNumber: phoneNumber,
+      stripeDateCreated: null,
+      stripeId: null
     };
 
-    // sends post request to store user shipping info
-    $.ajax({
-      method: 'POST',
-      url: 'api/addresses',
-      headers: {'Content-Type': 'application/json'},
-      data: JSON.stringify(shipping),
-      success: function () {
-        console.log('Your shipping info has been saved');
-      },
-      error: function (error) {
-        console.log(error);
-      }
+    var context = this;
+    Stripe.createToken(card, function (status, response) {
+      var payment = response;
+      shipping['stripeDateCreated'] = response.created;
+      shipping['stripeId'] = response.id;
+      context.setState({
+        payment: payment
+      });
+      $.ajax({
+        method: 'POST',
+        url: 'api/addresses',
+        headers: {'Content-Type': 'application/json'},
+        data: JSON.stringify(shipping),
+        success: function () {
+          console.log('Your shipping info has been saved');
+        },
+        error: function (error) {
+          console.log(error);
+        }
+      });
+      console.log(status, response);
     });
+
+    $('#form-submit-disable').prop('disabled', true);
 
   }
 
