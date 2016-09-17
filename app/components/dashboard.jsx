@@ -124,6 +124,7 @@ export default class Dashboard extends Component {
       phoneNumber: phoneNumber,
       stripeDateCreated: null,
       stripeId: null,
+      token: null,
       amount: amount
     };
 
@@ -134,6 +135,7 @@ export default class Dashboard extends Component {
       var payment = response;
       shipping['stripeDateCreated'] = response.created;
       shipping['stripeId'] = response.id;
+      shipping['token'] = response;
       context.setState({
         payment: payment
       });

@@ -119,7 +119,9 @@ module.exports = (app, db) => {
 
   //ADDRESS ENDPOINT
   app.post('/api/addresses', (req, res, next) => {
+    console.log(req.body);
     db.AddressController.postAddress(req, res, next);
+    // db.AddressController.sendToStripe(req, res, next);
   });
 
 };

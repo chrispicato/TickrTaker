@@ -175,11 +175,12 @@ export default class AuctionItem extends Component {
           {(thisId === thisItem.userId) ? 
             null :
             <div>
-              <button type="button" className="btn btn-primary pull-xs-left" onClick={this.redirectToFAQ}>Edit FAQ</button>
-            </div>
-            :
-            <div>
-              <BuyerItemView userId={thisId} item={thisItem} bids={this.state.bids} getItem={this.getItem} getItemBids={this.getItemBids}/>
+              <div>
+                <button type="button" className="btn btn-primary pull-xs-left" onClick={this.redirectToFAQ}>Edit FAQ</button>
+              </div>
+              <div>
+                <BuyerItemView userId={thisId} item={thisItem} bids={this.state.bids} getItem={this.getItem} getItemBids={this.getItemBids}/>
+              </div>
             </div>
           }
 
