@@ -14,13 +14,15 @@ export default class Cart extends Component {
     var context = this;
     setTimeout(function () {
       context.props.winningBids.forEach(function (item) {
+        var sum = parseInt(context.state.sum) + parseInt(item.highestBid);
+        var decimalSum = sum.toFixed(2);
         context.setState({
-          sum: (context.state.sum + item.highestBid).toFixed(2)
+          sum: decimalSum
         });
         
       });
       console.log(context.state.sum);
-    }, 2000);
+    }, 4000);
     // this.setState({
     //   sum: sum
     // });
