@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Cart from './cart.jsx';
 
 export default class Payment extends Component {
   constructor(props) {
@@ -44,6 +45,10 @@ export default class Payment extends Component {
               <span className="payment-span">CVC</span>
               <input className="payment-input" type="text" size="4" id="cvc" data-stripe="cvc" />
             </label>
+          </div>
+
+          <div className="col-xs-12 payment-container">
+            <Cart winningBids={this.props.winningBids} submitPayment={this.props.submitPayment}/>
           </div>
 
           <input type="submit" className="submit" value="Submit Payment" id="form-submit-disable" />

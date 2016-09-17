@@ -7,24 +7,29 @@ export default class Cart extends Component {
     this.state = {
       sum: 0
     }
-
-    this.subtotal = this.subtotal.bind(this);
   }
 
-  subtotal () {
-    // var currSum = this.state.sum;
-    // this.props.winningBids.map(function (item, index) {
-    //   currSum += item;
-    // });
+  componentDidMount () {
+    
+    var context = this;
+    setTimeout(function () {
+      context.props.winningBids.forEach(function (item) {
+        context.setState({
+          sum: context.state.sum + item.highestBid
+        });
+        
+      });
+      console.log(context.state.sum);
+    }, 2000);
     // this.setState({
-    //   sum: currSum
+    //   sum: sum
     // });
   }
 
   render () {
     return (
       <div>
-        <h5>{this.state.sum}</h5>
+        <h5>Subtotal: {this.state.sum}</h5>
       </div>
     );
   }

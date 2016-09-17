@@ -7,12 +7,14 @@ export default class BuyerItemView extends Component {
       newSubject: '',
       newMessage: '',
       toggleInput: false,
-      faqMessages: []
+      faqMessages: [],
+      bids: []
     };
     this.handleSubject = this.handleSubject.bind(this);
     this.handleSubject = this.handleSubject.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this._onClick = this._onClick.bind(this);
+    this.sendItemBid = this.sendItemBid.bind(this);
   }
 
   _onClick() {
@@ -72,9 +74,9 @@ export default class BuyerItemView extends Component {
 
   sendItemBid(e) {     // Ajax request to bid on an item
     e.preventDefault();
-    if (this.state.bids[0] === undefined || $('#bid').val() >= this.state.bids[0].price + 1 && $('#bid').val() !== '') {
+    if (this.props.bids[0] === undefined || $('#bid').val() >= this.props.bids[0].price + 1 && $('#bid').val() !== '') {
       var context = this;
-      var newBids = this.state.bids.slice();
+      var newBids = context.props.bids.slice();
       newBids.push($('#bid').val());
       $.ajax({
         method: 'GET',
@@ -82,7 +84,7 @@ export default class BuyerItemView extends Component {
         success: function(user) {
           $.ajax({
             method: 'POST',
-            url: '/api/items/bids/' + context.props.params.id,
+            url: '/api/items/bids/' + context.props.item.id,
             headers: {'Content-Type': 'application/json'},
             data: JSON.stringify({
               user: user, 
@@ -90,8 +92,8 @@ export default class BuyerItemView extends Component {
             success: function (res) {
               $('#bid').val('');
               console.log(res);
-              context.getItem();
-              context.getItemBids();
+              context.props.getItem();
+              context.props.getItemBids();
               context.setState({
                 bids: newBids
               });

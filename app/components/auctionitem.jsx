@@ -116,40 +116,6 @@ export default class AuctionItem extends Component {
     });
   }
 
-  // sendItemBid(e) {     // Ajax request to bid on an item
-  //   e.preventDefault();
-  //   if (this.state.bids[0] === undefined || $('#bid').val() >= this.state.bids[0].price + 1 && $('#bid').val() !== '') {
-  //     var context = this;
-  //     var newBids = this.state.bids.slice();
-  //     newBids.push($('#bid').val());
-  //     $.ajax({
-  //       method: 'GET',
-  //       url: '/api/user_data',
-  //       success: function(user) {
-  //         $.ajax({
-  //           method: 'POST',
-  //           url: '/api/items/bids/' + context.props.params.id,
-  //           headers: {'Content-Type': 'application/json'},
-  //           data: JSON.stringify({
-  //             user: user, 
-  //             bid: $('#bid').val()}),
-  //           success: function (res) {
-  //             $('#bid').val('');
-  //             console.log(res);
-  //             context.getItem();
-  //             context.getItemBids();
-  //             context.setState({
-  //               bids: newBids
-  //             });
-  //           }
-  //         });
-  //       }
-  //     });
-  //   } else {
-  //     $('#bid-error').show();
-  //   }
-  // }
-
   redirectToFAQ() {
     return (
         <div>
@@ -211,7 +177,7 @@ export default class AuctionItem extends Component {
             </div>
             :
             <div>
-              <BuyerItemView userId={thisId} item={thisItem}/>
+              <BuyerItemView userId={thisId} item={thisItem} bids={this.state.bids} getItem={this.getItem} getItemBids={this.getItemBids}/>
             </div>
           }
 

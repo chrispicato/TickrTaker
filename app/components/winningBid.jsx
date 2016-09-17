@@ -74,7 +74,7 @@ export default class WinningBid extends Component {
         <div className="col-md-3 col-sm-12 item-ticker">
           {
             this.props.old ? ( ''
-            ) : <div className="row current-price"> Current Price: <span>{this.state.currentPrice}</span> </div>
+            ) : <div className="row current-price"> Current Price: <span id="winning-bid-price">{this.state.currentPrice}</span> </div>
           } 
           {
             this.props.old ? (

@@ -19,7 +19,7 @@ export default class Dashboard extends Component {
         cvc: '',
         exp_month: '',
         exp_year: ''
-      },
+      }
     };
     this._routePage = this._routePage.bind(this);
     // this.paymentChange = this.paymentChange.bind(this);
@@ -34,7 +34,6 @@ export default class Dashboard extends Component {
       method: 'GET',
       url: 'api/user_data',
       success: function(user) {
-        console.log('what is user?--->',user);
         context.setState({
           userId: user.user.id,
           userName: user.user.name
@@ -65,7 +64,7 @@ export default class Dashboard extends Component {
                 winningBids.push(item);
               } else {
                 losingBids.push(item);
-              }
+              } 
             });
             //console.log('bids are', winningBids, losingBids);
             context.setState({ 
@@ -149,6 +148,7 @@ export default class Dashboard extends Component {
     });
 
     $('#form-submit-disable').prop('disabled', true);
+    $('.payment').append('<h5>Your payment has been submitted</h5>');
 
   }
 
@@ -174,7 +174,7 @@ export default class Dashboard extends Component {
         <div className="col-md-8 off-set-2">
         {(this.state.route === 'itemsWon') ?
           <div>
-            <ItemsWon userId={this.state.userId} paymentChange={this.paymentChange} submitPayment={this.submitPayment}/>
+            <ItemsWon userId={this.state.userId} paymentChange={this.paymentChange} submitPayment={this.submitPayment} submitted={this.state.submitted}/>
           </div> : null}
 
         {(this.state.route === 'winning') ? 
