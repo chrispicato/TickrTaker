@@ -4,6 +4,7 @@ import LosingBid from './losingBid.jsx';
 import SaleItem from './saleItem.jsx';
 import ShippingInfo from './shippingInfo.jsx';
 import Payment from './payment.jsx';
+import Cart from './cart.jsx';
 
 export default class ItemsWon extends Component {
   constructor(props) {
@@ -82,6 +83,10 @@ export default class ItemsWon extends Component {
 
         <div className="col-xs-12 payment-container">
           <Payment paymentChange={this.props.paymentChange} submitPayment={this.props.submitPayment}/>
+        </div>
+
+        <div className="col-xs-12 payment-container">
+          <Cart winningBids={this.state.itemsWinningBidOn}/>
         </div>
 
         <h1>{this.props.userId}</h1>

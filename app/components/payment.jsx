@@ -46,7 +46,7 @@ export default class Payment extends Component {
             </label>
           </div>
 
-          <input type="submit" className="submit" value="Submit Payment" />
+          <input type="submit" className="submit" value="Submit Payment" id="form-submit-disable" />
 
           <span className="payment-span payment-errors"></span>
         </form>

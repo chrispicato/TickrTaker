@@ -84,33 +84,11 @@ export default class Dashboard extends Component {
     this.setState({route: page});
   }
 
-  // stripeResponseHandler (status, response) {
-  //   // Grab the form:
-  //   var $form = $('#payment-form');
-
-  //   if (response.error) { // Problem!
-
-  //     // Show the errors on the form:
-  //     $form.find('.payment-errors').text(response.error.message);
-  //     $form.find('.submit').prop('disabled', false); // Re-enable submission
-
-  //   } else { // Token was created!
-
-  //     // Get the token ID:
-  //     var token = response.id;
-
-  //     // Insert the token ID into the form so it gets submitted to the server:
-  //     $form.append($('<input type="hidden" name="stripeToken">').val(token));
-
-  //     // Submit the form:
-  //     $form.get(0).submit();
-  //   }
-  // }
-
   // handles storing shipping info in user table and sending payment info to stripe api
   submitPayment (e) {
     e.preventDefault();
 
+    // stripe api parsing
     var number = $('#number').val();
     var cvc = $('#cvc').val();
     var exp_month = $('#exp_month').val();
@@ -121,11 +99,13 @@ export default class Dashboard extends Component {
       cvc: cvc,
       exp_month: exp_month,
       exp_year: exp_year
-    }
+    };
 
     Stripe.createToken(card, function (status, response) {
       console.log(status, response);
     });
+
+    $('#form-submit-disable').prop('disabled', true);
 
     // ajax request for shipping info
     var name = $('#shipping-info-name').val();
@@ -149,9 +129,6 @@ export default class Dashboard extends Component {
       phoneNumber: phoneNumber
     };
 
-    // Test
-    console.log(shipping);
-
     // sends post request to store user shipping info
     $.ajax({
       method: 'POST',
@@ -166,39 +143,6 @@ export default class Dashboard extends Component {
       }
     });
 
-    // // stripe api request body
-    // var payment = {
-    //   name: name,
-    //   cardNumber: cardNumber,
-    //   expiration
-    // };
-
-    // $.ajax({
-    //   method: 'POST',
-    //   url: 'https://api.stripe.com',
-    //   data: shipping,
-    //   success: function (status, response) {
-    //     var $form = $('#payment-form');
-
-    //     if (response.error) { // Problem!
-
-    //       // Show the errors on the form:
-    //       $form.find('.payment-errors').text(response.error.message);
-    //       $form.find('.submit').prop('disabled', false); // Re-enable submission
-
-    //     } else { // Token was created!
-
-    //       // Get the token ID:
-    //       var token = response.id;
-
-    //       // Insert the token ID into the form so it gets submitted to the server:
-    //       $form.append($('<input type="hidden" name="stripeToken">').val(token));
-
-    //       // Submit the form:
-    //       $form.get(0).submit();
-    //     }
-    //   }
-    // });
   }
 
   render() {

@@ -1,5 +1,5 @@
 var Sequelize = require('sequelize');
-var db = new Sequelize('postgres://ubuntu:password@localhost:5432/tickr');
+var db = new Sequelize('postgres://christopherpicato:password@localhost:5432/tickr');
 var moment = require('moment');
 
 //  Get controllers for users, items, bids.
