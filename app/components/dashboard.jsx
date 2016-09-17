@@ -13,13 +13,22 @@ export default class Dashboard extends Component {
       itemsForSale: [],
       itemsWinningBidOn: [],
       itemsLosingBidOn: [],
-      route: ''
+      route: '',
+      card: {
+        number: '',
+        cvc: '',
+        exp_month: '',
+        exp_year: ''
+      }
     };
     this._routePage = this._routePage.bind(this);
+    // this.paymentChange = this.paymentChange.bind(this);
     this.submitPayment = this.submitPayment.bind(this);
+    // this.stripeResponseHandler = this.stripeResponseHandler.bind(this);
   }
 
   componentDidMount() {    //   Retrieve user data form, show items seller items on dashboard page
+
     var context = this;
     $.ajax({
       method: 'GET',
@@ -73,24 +82,47 @@ export default class Dashboard extends Component {
     this.setState({route: page});
   }
 
+  // stripeResponseHandler (status, response) {
+  //   // Grab the form:
+  //   var $form = $('#payment-form');
+
+  //   if (response.error) { // Problem!
+
+  //     // Show the errors on the form:
+  //     $form.find('.payment-errors').text(response.error.message);
+  //     $form.find('.submit').prop('disabled', false); // Re-enable submission
+
+  //   } else { // Token was created!
+
+  //     // Get the token ID:
+  //     var token = response.id;
+
+  //     // Insert the token ID into the form so it gets submitted to the server:
+  //     $form.append($('<input type="hidden" name="stripeToken">').val(token));
+
+  //     // Submit the form:
+  //     $form.get(0).submit();
+  //   }
+  // }
+
   // handles storing shipping info in user table and sending payment info to stripe api
   submitPayment (e) {
     e.preventDefault();
-    console.log('made it in life');
-    
-    // ajax request for payment info
-    var $form = $('#payment-form');
-    $form.submit(function(e) {
-      e.preventDefault();
-      console.log(e, 'stuff got submitted');
-      // Disable the submit button to prevent repeated clicks:
-      $form.find('.submit').prop('disabled', true);
 
-      // Request a token from Stripe:
-      Stripe.card.createToken($form, stripeResponseHandler);
+    var number = $('#number').val();
+    var cvc = $('#cvc').val();
+    var exp_month = $('#exp_month').val();
+    var exp_year = $('#exp_year').val();
 
-      // Prevent the form from being submitted:
-      return false;
+    var card = {
+      number: number,
+      cvc: cvc,
+      exp_month: exp_month,
+      exp_year: exp_year
+    }
+
+    Stripe.createToken(card, function (status, response) {
+      console.log(status, response);
     });
 
     // ajax request for shipping info
@@ -118,9 +150,10 @@ export default class Dashboard extends Component {
     // Test
     console.log(shipping);
 
+    // sends post request to store user shipping info
     $.ajax({
       method: 'POST',
-      url: 'api/user_data',
+      url: 'api/addresses',
       headers: {'Content-Type': 'application/json'},
       data: JSON.stringify(shipping),
       success: function () {
@@ -131,34 +164,40 @@ export default class Dashboard extends Component {
       }
     });
 
-    $.ajax({
-      method: 'POST',
-      url: 'https://api.stripe.com',
-      data: shipping,
-      success: function (status, response) {
-        var $form = $('#payment-form');
+    // // stripe api request body
+    // var payment = {
+    //   name: name,
+    //   cardNumber: cardNumber,
+    //   expiration
+    // };
 
-        if (response.error) { // Problem!
+    // $.ajax({
+    //   method: 'POST',
+    //   url: 'https://api.stripe.com',
+    //   data: shipping,
+    //   success: function (status, response) {
+    //     var $form = $('#payment-form');
 
-          // Show the errors on the form:
-          $form.find('.payment-errors').text(response.error.message);
-          $form.find('.submit').prop('disabled', false); // Re-enable submission
+    //     if (response.error) { // Problem!
 
-        } else { // Token was created!
+    //       // Show the errors on the form:
+    //       $form.find('.payment-errors').text(response.error.message);
+    //       $form.find('.submit').prop('disabled', false); // Re-enable submission
 
-          // Get the token ID:
-          var token = response.id;
+    //     } else { // Token was created!
 
-          // Insert the token ID into the form so it gets submitted to the server:
-          $form.append($('<input type="hidden" name="stripeToken">').val(token));
+    //       // Get the token ID:
+    //       var token = response.id;
 
-          // Submit the form:
-          $form.get(0).submit();
-        }
-      }
-    });
+    //       // Insert the token ID into the form so it gets submitted to the server:
+    //       $form.append($('<input type="hidden" name="stripeToken">').val(token));
+
+    //       // Submit the form:
+    //       $form.get(0).submit();
+    //     }
+    //   }
+    // });
   }
-
 
   render() {
     return (
@@ -182,7 +221,7 @@ export default class Dashboard extends Component {
         <div className="col-md-8 off-set-2">
         {(this.state.route === 'itemsWon') ?
           <div>
-            <ItemsWon userId={this.state.userId} submitPayment={this.submitPayment}/>
+            <ItemsWon userId={this.state.userId} paymentChange={this.paymentChange} submitPayment={this.submitPayment}/>
           </div> : null}
 
         {(this.state.route === 'winning') ? 

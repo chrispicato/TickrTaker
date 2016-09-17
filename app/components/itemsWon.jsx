@@ -81,7 +81,7 @@ export default class ItemsWon extends Component {
         </div>
 
         <div className="col-xs-12 payment-container">
-          <Payment submitPayment={this.props.submitPayment}/>
+          <Payment paymentChange={this.props.paymentChange} submitPayment={this.props.submitPayment}/>
         </div>
 
         <h1>{this.props.userId}</h1>

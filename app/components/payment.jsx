@@ -5,15 +5,16 @@ export default class Payment extends Component {
     super(props);
   }
 
-  // the submit is parsed by stripe functions
+  componentDidMount () {
+    Stripe.setPublishableKey('pk_test_UahXVPVR1lOrfFKhQIxrY5re');
+  }
+
   render () {
     return (
       <div className="payment">
-
-        {Stripe.setPublishableKey('pk_test_UahXVPVR1lOrfFKhQIxrY5re')}
         
         <h5 className="payment-header">Payment Info</h5>
-        <form onSubmit={this.props.submitPayment} method="POST" id="payment-form">
+        <form onChange={this.props.paymentChange} onSubmit={this.props.submitPayment} method="POST" id="payment-form">
 
           <div className="payment-div">
             <label>
@@ -25,23 +26,23 @@ export default class Payment extends Component {
           <div className="payment-div">
             <label>
               <span className="payment-span">Card Number</span>
-              <input className="payment-input" type="text" size="20" data-stripe="number" />
+              <input className="payment-input" type="text" size="20" id="number" data-stripe="number" />
             </label>
           </div>
 
           <div className="payment-div">
             <label>
               <span className="payment-span">Expiration (MM/YY)</span>
-              <input className="payment-input" type="text" size="2" data-stripe="exp_month" />
+              <input className="payment-input" type="text" size="2" id="exp_month" data-stripe="exp_month" />
             </label>
             <span className="payment-span"> / </span>
-            <input className="payment-input" type="text" size="2" data-stripe="exp_year" />
+            <input className="payment-input" type="text" size="2" id="exp_year" data-stripe="exp_year" />
           </div>
 
           <div className="payment-div">
             <label>
               <span className="payment-span">CVC</span>
-              <input className="payment-input" type="text" size="4" data-stripe="cvc" />
+              <input className="payment-input" type="text" size="4" id="cvc" data-stripe="cvc" />
             </label>
           </div>
 
