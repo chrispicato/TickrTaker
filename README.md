@@ -3,7 +3,7 @@ Tickr: time-sensitive auctions
 
 ## Team
 
-  - __Development Team Members__: Alexander, Cihan, Kunal, Leonard
+  - __Development Team Members__: Alexander, Cihan, Kunal, Leonard, Akai, Chris, Danny, Wendy
 
 ## Table of Contents
 
